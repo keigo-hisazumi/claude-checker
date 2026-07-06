@@ -69,7 +69,7 @@ jobs:
       # TODO: テストスクリプトが存在する場合は有効化してください
       # - run: npm run test:unit
       - name: test プレースホルダー
-        run: echo "TODO: test コマンドを設定してください"
+        run: 'echo "TODO: test コマンドを設定してください"'
 
   build:
     name: Build
