@@ -1,0 +1,57 @@
+# OS / エディタ
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.iml
+# .vscode/ はワークスペース推奨設定を共有するためコミット対象（リポジトリ独自の運用方針）
+
+# ログ・テンポラリ
+*.log
+logs/
+tmp/
+.cache/
+
+# 環境変数 / 機密情報
+.env
+.env.*
+!.env.example
+.envrc
+
+# 依存関係（言語ごとにコメントアウトを外す）
+# Node.js
+node_modules/
+.pnpm-store/
+.yarn/
+.npm/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ビルド成果物
+dist/
+build/
+out/
+coverage/
+*.tsbuildinfo
+.next/
+.nuxt/
+.turbo/
+
+# テスト・スクリーンショット
+screenshots/
+playwright-report/
+test-results/
+.playwright/
+
+# ツール
+.vercel
+.wrangler

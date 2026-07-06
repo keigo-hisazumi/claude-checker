@@ -1,0 +1,70 @@
+# PR ごとに Playwright でスクリーンショットを撮影し、PR コメントに貼り付けるワークフローの雛形。
+#
+# 利用方法:
+#   1. リポジトリに Playwright を導入し、`@screenshot` タグを付けたテストを用意する
+#      （例: `tests/screenshots.spec.ts`）。
+#   2. ビルド/起動コマンドを実プロジェクトに合わせて差し替える。
+#   3. 日本語フォントが必要な場合は `fonts-noto-cjk` をインストールする
+#      （`.github/copilot-setup-steps.yml` も参照）。
+#
+# 必要に応じて Vercel/Cloudflare Pages のプレビュー URL を使う方式や、
+# Chromatic / Percy のようなビジュアルリグレッション SaaS への置き換えも検討してください。
+
+name: Screenshot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: screenshot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screenshot:
+    if: ${{ false }} # TODO: Playwright を導入したら `true` にして有効化
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 日本語フォントをインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+          fc-cache -fv
+
+      # TODO: 実プロジェクトに合わせて setup-node / pnpm などへ差し替え
+      # - uses: actions/setup-node@v4
+      #   with:
+      #     node-version-file: .nvmrc
+      #     cache: pnpm
+      # - run: pnpm install --frozen-lockfile
+      # - run: pnpm build
+      # - run: npx playwright install --with-deps chromium
+      # - run: npx playwright test --grep @screenshot
+
+      - name: スクリーンショットをアップロード
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      # TODO: PR コメントへの自動添付
+      # 画像を表示するには公開 URL が必要なため、以下のいずれかの方法で実現してください:
+      #   (a) `actions/upload-artifact` のリンクをコメントに貼る（簡易）
+      #   (b) `peter-evans/create-or-update-comment` を使ってアーティファクト URL を投稿
+      #   (c) S3/Cloudflare R2 などにアップロードして公開 URL を取得し、`![](url)` で埋め込む
+      # - name: PR にコメントを投稿
+      #   uses: peter-evans/create-or-update-comment@v4
+      #   with:
+      #     issue-number: ${{ github.event.pull_request.number }}
+      #     body: |
+      #       ## スクリーンショット
+      #       アーティファクト: ${{ steps.upload.outputs.artifact-url }}

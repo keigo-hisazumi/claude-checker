@@ -1,0 +1,12 @@
+# コードオーナー設定
+# PR が作成されると、対応するパスのオーナーに自動でレビュー依頼が飛ぶ。
+# 詳細: https://docs.github.com/ja/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+#
+# 個人開発の場合でも、将来チーム化したときのためにファイルを置いておくと良い。
+
+# デフォルトのオーナー（リポジトリ全体）
+* @keigo-hisazumi
+
+# 例: フロントエンドの担当を分けたい場合
+# /src/frontend/   @keigo-hisazumi
+# /docs/           @keigo-hisazumi

@@ -1,0 +1,52 @@
+# Release Drafter 設定（PR ラベルに応じてリリースノート草案を自動生成）
+
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+categories:
+  - title: "新機能"
+    labels:
+      - "feature"
+      - "enhancement"
+  - title: "バグ修正"
+    labels:
+      - "fix"
+      - "bug"
+  - title: "ドキュメント"
+    labels:
+      - "docs"
+  - title: "リファクタリング / 内部改善"
+    labels:
+      - "refactor"
+      - "chore"
+  - title: "依存関係の更新"
+    labels:
+      - "dependencies"
+
+change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
+change-title-escapes: '\<*_&'
+
+version-resolver:
+  major:
+    labels:
+      - "major"
+      - "breaking"
+  minor:
+    labels:
+      - "minor"
+      - "feature"
+      - "enhancement"
+  patch:
+    labels:
+      - "patch"
+      - "fix"
+      - "bug"
+      - "docs"
+      - "chore"
+      - "dependencies"
+  default: patch
+
+template: |
+  ## 変更内容
+
+  $CHANGES

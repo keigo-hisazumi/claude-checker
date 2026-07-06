@@ -1,0 +1,43 @@
+# CodeQL によるセキュリティスキャン
+#
+# 言語が確定したら `language` に対象（`javascript-typescript`, `python`, `go`,
+# `java-kotlin`, `csharp`, `ruby`, `swift`, `cpp` など）を追加してください。
+# JS/TS ソースファイルが存在する場合のみ実行されます。
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    if: hashFiles('**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx') != ''
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: 対象言語を必要に応じて変更・追加してください
+        language: [javascript-typescript]
+    steps:
+      - uses: actions/checkout@v4
+      - name: CodeQL を初期化
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - name: 自動ビルド
+        uses: github/codeql-action/autobuild@v3
+      - name: 解析を実行
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"

@@ -1,0 +1,94 @@
+# CI ワークフロー
+#
+# Node.js / npm プロジェクト向けの標準 CI パイプラインです。
+# 言語やパッケージマネージャーが異なる場合は、各ステップを差し替えてください:
+#   - Python: actions/setup-python + pip/poetry/uv
+#   - Go: actions/setup-go
+#   - pnpm/yarn の場合は cache: 'npm' を 'pnpm'/'yarn' に変更
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    if: hashFiles('package.json') != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: 依存関係のインストール
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+
+  typecheck:
+    name: Type check
+    if: hashFiles('package.json') != ''
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: 依存関係のインストール
+        run: npm ci
+      - name: 型チェック
+        run: npm run type-check
+
+  test:
+    name: Test
+    if: hashFiles('package.json') != ''
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: 依存関係のインストール
+        run: npm ci
+      # TODO: テストスクリプトが存在する場合は有効化してください
+      # - run: npm run test:unit
+      - name: test プレースホルダー
+        run: echo "TODO: test コマンドを設定してください"
+
+  build:
+    name: Build
+    if: hashFiles('package.json') != ''
+    needs: [typecheck, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: 依存関係のインストール
+        run: npm ci
+      - name: ビルド
+        run: npm run build
+        env:
+          NODE_ENV: production

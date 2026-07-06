@@ -1,0 +1,30 @@
+# テキストファイルは LF に正規化（Windows でのチェックアウト時も含む）
+* text=auto eol=lf
+
+# Windows 専用ファイルは CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# シェルスクリプトは LF
+*.sh text eol=lf
+
+# バイナリ（差分・マージ無効化）
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+
+# GitHub の言語統計から除外
+docs/** linguist-documentation
+*.md linguist-detectable=false

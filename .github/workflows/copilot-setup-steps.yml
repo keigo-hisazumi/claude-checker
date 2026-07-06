@@ -1,0 +1,75 @@
+# GitHub Copilot Coding Agent セットアップステップ（ワークフロー版）
+# .github/copilot-setup-steps.yml と対応するワークフローです。
+# このワークフローを実行することで、セットアップ内容を事前に検証できます。
+
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 日本語フォントのインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            fonts-noto-cjk \
+            fonts-noto-cjk-extra \
+            fonts-ipafont \
+            fonts-ipaexfont \
+            fonts-takao-gothic \
+            fonts-takao-mincho \
+            fonts-liberation \
+            fonts-dejavu \
+            fonts-ubuntu \
+            fonts-open-sans
+          echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
+          sudo apt-get install -y ttf-mscorefonts-installer
+          sudo mkdir -p /usr/share/fonts/truetype/segoe-ui
+          cd /tmp
+          wget -q https://github.com/mrbvrz/segoe-ui-linux/raw/master/font/segoeui.ttf -O segoeui.ttf
+          wget -q https://github.com/mrbvrz/segoe-ui-linux/raw/master/font/segoeuib.ttf -O segoeuib.ttf
+          wget -q https://github.com/mrbvrz/segoe-ui-linux/raw/master/font/segoeuii.ttf -O segoeuii.ttf
+          wget -q https://github.com/mrbvrz/segoe-ui-linux/raw/master/font/segoeuiz.ttf -O segoeuiz.ttf
+          sudo mv *.ttf /usr/share/fonts/truetype/segoe-ui/
+          fc-cache -fv
+
+      # TODO: 実プロジェクトに合わせて以下を有効化してください
+      # - name: Node.js のセットアップ
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '22'
+      #     cache: 'npm'
+      #
+      # - name: 依存関係のインストール
+      #   run: npm ci
+      #
+      # - name: 型チェック
+      #   run: npm run type-check
+      #
+      # - name: ビルド
+      #   run: npm run build-only
+      #
+      # - name: 開発サーバーの起動
+      #   run: npm run dev &
+      #
+      # - name: サーバーの起動待機
+      #   run: |
+      #     timeout 60 bash -c \
+      #       'until curl -sf http://localhost:5173 > /dev/null; \
+      #       do sleep 2; done' || exit 1
+      #     echo "Development server is ready"
