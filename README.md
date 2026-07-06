@@ -1,67 +1,48 @@
-# Template
+# Claude Usage Checker
 
-このリポジトリは新しいプロジェクト用のテンプレートです。AI アシスタント向けの指示書、Issue / PR テンプレート、CI/CD の雛形、エディタ設定、各種ドット・ガバナンスファイルを含みます。
+Claude Code の使用状況(トークン使用量・推定コスト)を確認できる静的 Web ページです。
 
-## AI アシスタント運用方針
+Claude Code がローカルに保存する使用ログ(`~/.claude/projects/**/*.jsonl`)をブラウザで読み込み、以下を可視化します。
 
-このテンプレートは **Claude をメインの AI アシスタント** として利用し、**Cursor / GitHub Copilot をサブツール** として併用するワークフローを想定しています。開発ルールの **正本は [`AGENTS.md`](./AGENTS.md)** で、各ツール向けの指示書はそれを参照する構成です。
+- **推定総コスト / 総トークン / 対象期間 / API リクエスト数** の統計タイル
+- **日別の推定コスト・トークン数** の棒グラフ(表表示への切替つき)
+- **モデル別内訳**(入力 / 出力 / キャッシュ書込 / キャッシュ読取 / コスト構成比)
+- コスト推定に使用した **料金レート表**
 
-| ツール | ファイル | 役割 |
-| --- | --- | --- |
-| 汎用 AI エージェント | [`AGENTS.md`](./AGENTS.md) | **正本**。すべてのルールはここに集約 |
-| Claude Code | [`CLAUDE.md`](./CLAUDE.md) | `AGENTS.md` を参照 |
-| Cursor | [`.cursor/rules/project.mdc`](./.cursor/rules/project.mdc) | `AGENTS.md` を参照 |
-| GitHub Copilot | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) | `AGENTS.md` を参照 |
+## 特徴
 
-## 含まれるもの
-
-### AI 向け指示書
-- `AGENTS.md` — **正本**（汎用 AI エージェント向け）
-- `CLAUDE.md` — Claude Code 向け（`AGENTS.md` を参照）
-- `.cursor/rules/project.mdc` — Cursor 向け（`AGENTS.md` を参照）
-- `.github/copilot-instructions.md` — GitHub Copilot 向け（`AGENTS.md` を参照）
-- `.github/copilot-setup-steps.yml` — Copilot Coding Agent のビルド環境（日本語フォント）
-
-### Issue / PR
-- `.github/ISSUE_TEMPLATE/` — バグ報告 / 機能要望 / 質問テンプレート
-- `.github/PULL_REQUEST_TEMPLATE.md` — PR テンプレート（日本語）
-- `.github/CODEOWNERS` — レビュー自動アサイン
-- `CONTRIBUTING.md` / `SECURITY.md` — 貢献ガイドとセキュリティポリシー
-
-### CI/CD
-- `.github/workflows/ci.yml` — push / PR 時の lint / typecheck / test / build（言語非依存の雛形）
-- `.github/workflows/actionlint.yml` — workflow 自体の Lint
-- `.github/workflows/codeql.yml` — セキュリティスキャン（言語確定後に有効化）
-- `.github/workflows/release-drafter.yml` + `.github/release-drafter.yml` — リリースノート自動生成
-- `.github/workflows/screenshot.yml` — PR スクリーンショット用 Playwright 雛形
-- `.github/dependabot.yml` — 依存関係の自動更新
-
-### 環境差異の吸収
-- `.editorconfig` — エディタ間のインデント／改行統一
-- `.gitattributes` — テキスト/バイナリ・改行コードの正規化
-- `.gitignore` — OS / 言語 / ビルド成果物
-- `.vscode/extensions.json`, `.vscode/settings.json` — VSCode 推奨拡張・設定
-
-### その他
-- `LICENSE` — MIT
+- 🔒 **完全クライアントサイド** — ログはブラウザ内でのみ解析され、外部には一切送信されません
+- 📦 **依存パッケージゼロ** — Vanilla JS + 手書き SVG のみで動作します
+- 🌗 **ライト / ダークテーマ対応** — OS の設定に自動追従します
 
 ## 使い方
 
-1. このテンプレートから新しいリポジトリを作成（GitHub の **Use this template** ボタン、または clone）。
-2. `README.md`、`CODEOWNERS`、`LICENSE` のプロジェクト名や著作権者を書き換える。
-3. 言語/フレームワークが決まったら以下を有効化:
-   - `.github/workflows/ci.yml` の TODO コメントを実コマンドに差し替え
-   - `.github/workflows/codeql.yml` の `if: ${{ false }}` を外し、`matrix.language` を設定
-   - `.github/workflows/screenshot.yml` の `if: ${{ false }}` を外し、Playwright を導入
-   - `.github/dependabot.yml` の対応する `package-ecosystem` のコメントアウトを外す
-4. **リポジトリ作成後の手動設定**（テンプレートに含められないため `README` で案内）:
-   - `main` ブランチ保護ルールを設定（PR 必須、CI パス必須、force push 禁止）
-   - GitHub Actions の権限を `Read and write` 許可（Release Drafter 用）
-   - Secret スキャン / Dependabot Alerts を有効化
+1. ページを開く(GitHub Pages、またはローカルで `src/index.html` を直接開く)
+2. 「フォルダを選択」で `~/.claude/projects` を選ぶか、`.jsonl` ファイルをドラッグ&ドロップする
+3. 集計結果が表示されます(「サンプルデータを表示」で動作確認も可能)
 
-## VSCode 環境
+> **注意**: 表示されるコストは公開 API 料金(USD)に基づく**推定値**です。キャッシュ書込は入力単価の 1.25 倍(5 分 TTL)、キャッシュ読取は 0.1 倍で計算しています。Pro / Max などサブスクリプション利用時の実際の請求額とは異なります。
 
-VSCode をエディタとして使うワークフローを想定しています。`.vscode/extensions.json` に記載の拡張をインストールすると、Lint / Format / Spell check が即座に動きます。
+## 開発
+
+```bash
+npm ci          # 依存関係のインストール(依存パッケージはありません)
+npm run lint    # 構文チェック(node --check)
+npm run build   # src/ を dist/ へコピー
+```
+
+`main` ブランチへのプッシュで GitHub Pages(`dist/`)へ自動デプロイされます(`.github/workflows/deploy.yml`)。
+
+## ディレクトリ構成
+
+```
+src/
+  index.html   # ページ本体
+  styles.css   # スタイル(ライト/ダークテーマ)
+  app.js       # JSONL 解析・集計・描画ロジック
+scripts/
+  build.mjs    # dist/ へのコピースクリプト
+```
 
 ## ライセンス
 

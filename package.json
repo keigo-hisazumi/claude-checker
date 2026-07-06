@@ -1,0 +1,12 @@
+{
+  "name": "claude-checker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Claude Code の使用状況(トークン・コスト)をブラウザだけで可視化するページ",
+  "license": "MIT",
+  "scripts": {
+    "lint": "node --check src/app.js && node --check scripts/build.mjs",
+    "type-check": "echo \"型チェック対象なし(TypeScript 未導入のためスキップ)\"",
+    "build": "node scripts/build.mjs"
+  }
+}
