@@ -24,7 +24,6 @@ permissions:
 jobs:
   lint:
     name: Lint
-    if: hashFiles('package.json') != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +39,6 @@ jobs:
 
   typecheck:
     name: Type check
-    if: hashFiles('package.json') != ''
     needs: lint
     runs-on: ubuntu-latest
     steps:
@@ -57,7 +55,6 @@ jobs:
 
   test:
     name: Test
-    if: hashFiles('package.json') != ''
     needs: lint
     runs-on: ubuntu-latest
     steps:
@@ -76,7 +73,6 @@ jobs:
 
   build:
     name: Build
-    if: hashFiles('package.json') != ''
     needs: [typecheck, test]
     runs-on: ubuntu-latest
     steps:
