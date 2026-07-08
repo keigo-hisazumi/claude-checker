@@ -24,7 +24,6 @@ permissions:
 jobs:
   lint:
     name: Lint
-    if: hashFiles('package.json') != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +39,6 @@ jobs:
 
   typecheck:
     name: Type check
-    if: hashFiles('package.json') != ''
     needs: lint
     runs-on: ubuntu-latest
     steps:
@@ -57,7 +55,6 @@ jobs:
 
   test:
     name: Test
-    if: hashFiles('package.json') != ''
     needs: lint
     runs-on: ubuntu-latest
     steps:
@@ -72,11 +69,10 @@ jobs:
       # TODO: テストスクリプトが存在する場合は有効化してください
       # - run: npm run test:unit
       - name: test プレースホルダー
-        run: echo "TODO: test コマンドを設定してください"
+        run: 'echo "TODO: test コマンドを設定してください"'
 
   build:
     name: Build
-    if: hashFiles('package.json') != ''
     needs: [typecheck, test]
     runs-on: ubuntu-latest
     steps:

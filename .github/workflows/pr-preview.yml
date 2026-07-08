@@ -26,8 +26,7 @@ concurrency:
 
 jobs:
   deploy-preview:
-    # package.json が存在する npm プロジェクトのみ実行
-    if: github.event.action != 'closed' && hashFiles('package.json') != ''
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -103,7 +102,7 @@ jobs:
             }
 
   cleanup-preview:
-    if: github.event.action == 'closed' && hashFiles('package.json') != ''
+    if: github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

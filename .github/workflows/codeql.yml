@@ -23,7 +23,6 @@ jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
-    if: hashFiles('**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx') != ''
     strategy:
       fail-fast: false
       matrix:
