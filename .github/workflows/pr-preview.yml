@@ -56,7 +56,7 @@ jobs:
           keep_files: true
 
       - name: プレビュー URL のコメント投稿
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const prNumber = context.issue.number;
