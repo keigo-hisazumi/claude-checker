@@ -29,7 +29,7 @@ jobs:
         # TODO: 対象言語を必要に応じて変更・追加してください
         language: [javascript-typescript]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: CodeQL を初期化
         uses: github/codeql-action/init@v4
         with:
