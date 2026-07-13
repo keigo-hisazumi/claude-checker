@@ -29,7 +29,7 @@ jobs:
     if: ${{ false }} # TODO: Playwright を導入したら `true` にして有効化
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: 日本語フォントをインストール
         run: |
