@@ -36,6 +36,13 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: "development"
+    ignore:
+      # typescript-eslint が対応するまで typescript のメジャーバージョン更新は保留する
+      # (typescript-eslint@8.64.0 時点では typescript の peer 範囲が >=4.8.4 <6.1.0 で
+      #  typescript 7.x 系と競合し、npm ci が ERESOLVE で失敗するため)
+      # typescript-eslint を使わない場合や、対応後は削除してください
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   # TODO: pip を使う場合は有効化
   # - package-ecosystem: "pip"

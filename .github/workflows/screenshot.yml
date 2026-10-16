@@ -38,7 +38,7 @@ jobs:
           fc-cache -fv
 
       # TODO: 実プロジェクトに合わせて setup-node / pnpm などへ差し替え
-      # - uses: actions/setup-node@v4
+      # - uses: actions/setup-node@v7
       #   with:
       #     node-version-file: .nvmrc
       #     cache: pnpm
