@@ -26,7 +26,8 @@ concurrency:
 
 jobs:
   screenshot:
-    if: ${{ false }} # TODO: Playwright を導入したら `true` にして有効化
+    # Playwright 導入後、リポジトリ変数 ENABLE_SCREENSHOT を `true` に設定すると有効化される
+    if: vars.ENABLE_SCREENSHOT == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
