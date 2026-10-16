@@ -20,9 +20,11 @@ permissions:
   contents: write
   pull-requests: write
 
+# 本番デプロイ（deploy.yml）と同じ group で直列化し、gh-pages への
+# 同時 push による競合（pr-* プレビューの消失）を防ぐ。
 concurrency:
-  group: pr-preview-${{ github.event.number }}
-  cancel-in-progress: true
+  group: gh-pages-deploy
+  cancel-in-progress: false
 
 jobs:
   deploy-preview:
