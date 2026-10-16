@@ -16,8 +16,11 @@ on:
 permissions:
   contents: write
 
+# 本番デプロイと PR プレビューデプロイは同じ gh-pages ブランチへ push する。
+# 別々の concurrency group だと同時実行で push が競合し、開設中 PR の
+# pr-* プレビューが消える（keep_files も救えない）。共通 group で直列化する。
 concurrency:
-  group: pages
+  group: gh-pages-deploy
   cancel-in-progress: false
 
 jobs:
