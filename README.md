@@ -26,8 +26,8 @@ Claude Code がローカルに保存する使用ログ(`~/.claude/projects/**/*.
 ## 開発
 
 ```bash
-npm ci          # 依存関係のインストール(依存パッケージはありません)
-npm run lint    # 構文チェック(node --check)
+npm ci          # 依存関係のインストール(開発用の ESLint のみ)
+npm run lint    # ESLint
 npm run build   # src/ を dist/ へコピー
 ```
 
