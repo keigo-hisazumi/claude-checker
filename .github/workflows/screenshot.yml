@@ -4,8 +4,7 @@
 #   1. リポジトリに Playwright を導入し、`@screenshot` タグを付けたテストを用意する
 #      （例: `tests/screenshots.spec.ts`）。
 #   2. ビルド/起動コマンドを実プロジェクトに合わせて差し替える。
-#   3. 日本語フォントが必要な場合は `fonts-noto-cjk` をインストールする
-#      （`.github/copilot-setup-steps.yml` も参照）。
+#   3. 日本語フォントが必要な場合は `fonts-noto-cjk` をインストールする。
 #
 # 必要に応じて Vercel/Cloudflare Pages のプレビュー URL を使う方式や、
 # Chromatic / Percy のようなビジュアルリグレッション SaaS への置き換えも検討してください。
