@@ -8,14 +8,12 @@ assignees: []
 
 ## 質問内容 (Question)
 
-
 ## 再現手順 / 試したこと (What you tried / Steps)
 
-
 ## 環境情報 (Environment)
+
 - OS / ブラウザ / バージョンなど
 
 ## 期待する結果 (Expected result)
-
 
 ## 追加情報 (Additional information)

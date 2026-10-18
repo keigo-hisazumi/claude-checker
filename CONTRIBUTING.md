@@ -27,7 +27,7 @@
 
 [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) を踏襲します。プレフィックスは英語、本文は日本語で記述してください。
 
-```
+```text
 feat: ユーザー一覧画面を追加
 
 - ユーザー検索機能を実装

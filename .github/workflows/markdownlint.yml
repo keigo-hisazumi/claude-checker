@@ -1,0 +1,40 @@
+# Markdown の書き方チェック
+# リポジトリ内の Markdown ファイルが `.markdownlint-cli2.jsonc` のルールに従っているかを検査する。
+# サードパーティ Action を介さず、markdownlint-cli2 をバージョン固定で実行する。
+
+name: markdownlint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.md"
+      - ".markdownlint-cli2.jsonc"
+      - ".github/workflows/markdownlint.yml"
+  pull_request:
+    paths:
+      - "**/*.md"
+      - ".markdownlint-cli2.jsonc"
+      - ".github/workflows/markdownlint.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  MARKDOWNLINT_CLI2_VERSION: "0.23.3"
+
+jobs:
+  markdownlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: markdownlint-cli2 を実行
+        run: npx --yes "markdownlint-cli2@${MARKDOWNLINT_CLI2_VERSION}"

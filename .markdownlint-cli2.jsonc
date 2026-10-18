@@ -1,0 +1,37 @@
+// Markdown の書き方ルール（markdownlint-cli2 の設定）
+// ルールの説明は AGENTS.md の「Markdown の書き方」を参照。
+// 各ルールの詳細: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+{
+  "config": {
+    "default": true,
+    // 見出しは `#` 形式
+    "MD003": { "style": "atx" },
+    // 箇条書きの記号は `-`
+    "MD004": { "style": "dash" },
+    // 入れ子の箇条書きは 2 スペース
+    "MD007": { "indent": 2 },
+    // 行末スペースによる改行は使わない
+    "MD009": { "br_spaces": 0 },
+    // 日本語の文章は折り返さないため、行の長さは制限しない
+    "MD013": false,
+    // 同じ見出しは兄弟要素でなければ許可（例: 各セクション内の「例外事項」）
+    "MD024": { "siblings_only": true },
+    // 番号付きリストは 1. 2. 3. と連番
+    "MD029": { "style": "ordered" },
+    // 水平線は `---`
+    "MD035": { "style": "---" },
+    // PR テンプレートや Issue テンプレートは `##` から始まるため、先頭行の h1 は必須にしない
+    "MD041": false,
+    // コードブロックは ``` で囲む
+    "MD046": { "style": "fenced" },
+    "MD048": { "style": "backtick" },
+    // 強調は `*` / `**`
+    "MD049": { "style": "asterisk" },
+    "MD050": { "style": "asterisk" },
+    // 表は行頭と行末にパイプを付ける
+    "MD055": { "style": "leading_and_trailing" }
+  },
+  "globs": ["**/*.md"],
+  "gitignore": true,
+  "ignores": ["node_modules/**", "CHANGELOG.md"]
+}

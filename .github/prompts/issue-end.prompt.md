@@ -11,7 +11,7 @@ description: GitHubにブランチをプッシュしてPull Requestを作成す�
 
 ## コマンド例
 
-```
+```text
 /issue-end
 ```
 
@@ -21,6 +21,7 @@ description: GitHubにブランチをプッシュしてPull Requestを作成す�
    - 作業中の Github Issue に関連する会話履歴を分析します
 
 2. **Gitステータスと差分を確認**:
+
    ```bash
    git status
    git diff HEAD
@@ -32,17 +33,20 @@ description: GitHubにブランチをプッシュしてPull Requestを作成す�
    - 詳細な変更点を含めます
 
 4. **変更をステージングしてコミット**:
+
    ```bash
    git add <変更されたファイル>
    git commit -m "<自動生成されたコミットメッセージ>"
    ```
 
 5. **リモートにプッシュ**:
+
    ```bash
    git push -u origin <現在のブランチ名>
    ```
 
 6. **プルリクエストの自動作成**:
+
    ```bash
    gh pr create --title "<PRタイトル>" --body "$(cat <<'EOF'
    ## 変更の概要
@@ -69,6 +73,7 @@ description: GitHubにブランチをプッシュしてPull Requestを作成す�
    EOF
    )"
    ```
+
    - 上記のテンプレートを使用してPRタイトルと本文を作成します
    - 出来るだけ日本語で記載します
    - テンプレートの項目は必ず記載します
@@ -78,6 +83,7 @@ description: GitHubにブランチをプッシュしてPull Requestを作成す�
    - 作成されたPRのURLをユーザーに報告します
 
 8. **mainブランチに戻る**:
+
    ```bash
    git checkout main
    ```

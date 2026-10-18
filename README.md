@@ -35,7 +35,7 @@ npm run build   # src/ を dist/ へコピー
 
 ## ディレクトリ構成
 
-```
+```text
 src/
   index.html   # ページ本体
   styles.css   # スタイル(ライト/ダークテーマ)
