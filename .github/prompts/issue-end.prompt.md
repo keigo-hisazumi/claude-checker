@@ -94,6 +94,6 @@ description: GitHubにブランチをプッシュしてPull Requestを作成す�
 ## 注意事項
 
 - 日本語でユーザーとコミュニケーションを取ります
-- すべての行動は@.github/copilot-instructions.mdのルールに従います
+- すべての行動は@AGENTS.mdのルールに従います
 - gitコマンドとghコマンドがインストールされていることを確認してください
 - gitコマンドとghコマンドを正確に使用してください

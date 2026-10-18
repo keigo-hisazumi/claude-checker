@@ -2,7 +2,7 @@
 
 このリポジトリで作業する **すべての AI エージェント／コーディングアシスタント**（Claude Code / Cursor / GitHub Copilot / Codex / Aider / その他汎用エージェント）は、本書のルールに従ってください。
 
-> 本リポジトリにおける開発ルールの **正本（Source of Truth）は本ファイル `AGENTS.md`** です。各ツール向けの指示書（`CLAUDE.md` / `.cursor/rules/project.mdc` / `.github/copilot-instructions.md`）はすべて本ファイルを参照する形に統一されています。ルール変更が必要な場合は本ファイルを更新してください。
+> 本リポジトリにおける開発ルールの **正本（Source of Truth）は本ファイル `AGENTS.md`** です。各ツール向けの指示書（`CLAUDE.md` / `.cursor/rules/project.mdc`）はすべて本ファイルを参照する形に統一されています。ルール変更が必要な場合は本ファイルを更新してください。
 
 ## 各ツール向けエントリーポイント
 
@@ -11,7 +11,6 @@
 | 汎用 AI エージェント | [`AGENTS.md`](./AGENTS.md) | **正本**。すべてのルールはここに集約 |
 | Claude Code | [`CLAUDE.md`](./CLAUDE.md) | `AGENTS.md` を参照 |
 | Cursor | [`.cursor/rules/project.mdc`](./.cursor/rules/project.mdc) | `AGENTS.md` を参照 |
-| GitHub Copilot | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) | `AGENTS.md` を参照 |
 
 ## 言語設定
 
@@ -161,8 +160,9 @@ npx markdownlint-cli2 --fix    # 自動修正できるものを修正
 
 ### AI 向け指示書の構成
 
-- ルールは `AGENTS.md` にだけ書く。`CLAUDE.md` と `.github/copilot-instructions.md` は `AGENTS.md` を参照する短い要約に留め、ルールを重複して書かない
-- `AGENTS.md`・`CLAUDE.md`・`.github/copilot-instructions.md`・`CONTRIBUTING.md`・`SECURITY.md`・Issue / PR テンプレートはテンプレートと同じ内容にし、ルールを変えるときはテンプレートから更新する
+- ルールは `AGENTS.md` にだけ書く。`CLAUDE.md` と `.cursor/rules/project.mdc` は `AGENTS.md` を参照する短い要約に留め、ルールを重複して書かない
+- `AGENTS.md`・`CLAUDE.md`・`.cursor/rules/project.mdc`・`CONTRIBUTING.md`・`SECURITY.md`・Issue / PR テンプレートはテンプレートと同じ内容にし、ルールを変えるときはテンプレートから更新する
+- GitHub Copilot 向けの `.github/copilot-instructions.md` は置かない（Copilot も `AGENTS.md` を読む）
 
 ## ブランチ運用ポリシー
 
