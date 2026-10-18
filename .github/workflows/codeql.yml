@@ -1,9 +1,15 @@
 # CodeQL によるセキュリティスキャン
 #
-# 言語が確定したら `language` に対象（`javascript-typescript`, `python`, `go`,
-# `java-kotlin`, `csharp`, `ruby`, `swift`, `cpp` など）を追加してください。
-# JS/TS ソースファイルが存在する場合のみ実行されます
-# （`hashFiles` はジョブレベルの `if` では使えないため detect ジョブで判定します）。
+# - actions: `.github/workflows/` 配下のワークフロー定義を解析（権限過多・スクリプトインジェクションなど）。下記のプライベートリポジトリの場合を除き常に実行します
+# - javascript-typescript: JS/TS ソースファイルが存在する場合のみ解析します
+#
+# 解析対象の言語は detect ジョブで決めます（`hashFiles` はジョブレベルの `if` では使えないため）。
+# 他の言語（`python`, `go`, `java-kotlin`, `csharp`, `ruby`, `swift`, `cpp` など）を追加する場合は
+# detect ジョブの判定を追加してください。コンパイル言語ではビルドが必要になるため、
+# `build-mode: none` を `autobuild` ステップ（github/codeql-action/autobuild@v4）に差し替えてください。
+#
+# プライベートリポジトリでは Code Scanning（GitHub Code Security）が有効でないと解析結果をアップロードできず失敗するため、
+# 既定ではスキップします。有効化済みの場合はリポジトリ変数 `ENABLE_CODEQL_ON_PRIVATE` を `true` に設定してください。
 
 name: CodeQL
 
@@ -11,49 +17,66 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   schedule:
-    - cron: "17 3 * * 1"
+    - cron: "17 18 * * 0" # 毎週月曜 03:17（JST）
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
-  security-events: write
-  actions: read
 
 jobs:
   detect:
-    name: Detect sources
+    name: Detect languages
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
-      has-sources: ${{ steps.check.outputs.has-sources }}
+      languages: ${{ steps.check.outputs.languages }}
     steps:
       - uses: actions/checkout@v7
-      - name: JS/TS ソースファイルの有無を判定
+        with:
+          persist-credentials: false
+      - name: 解析対象の言語を判定
         id: check
+        env:
+          IS_PRIVATE: ${{ github.event.repository.private }}
+          ENABLE_ON_PRIVATE: ${{ vars.ENABLE_CODEQL_ON_PRIVATE }}
         run: |
-          if [ -n "$(git ls-files '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs')" ]; then
-            echo "has-sources=true" >> "$GITHUB_OUTPUT"
+          if [ "$IS_PRIVATE" = "true" ] && [ "$ENABLE_ON_PRIVATE" != "true" ]; then
+            echo 'languages=[]' >> "$GITHUB_OUTPUT"
+            echo "プライベートリポジトリのため CodeQL をスキップします（有効化するには ENABLE_CODEQL_ON_PRIVATE を true に設定）"
+          elif [ -n "$(git ls-files '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs')" ]; then
+            echo 'languages=["actions","javascript-typescript"]' >> "$GITHUB_OUTPUT"
           else
-            echo "has-sources=false" >> "$GITHUB_OUTPUT"
-            echo "JS/TS ソースファイルが存在しないため、CodeQL をスキップします"
+            echo 'languages=["actions"]' >> "$GITHUB_OUTPUT"
+            echo "JS/TS ソースファイルが存在しないため、javascript-typescript の解析はスキップします"
           fi
 
   analyze:
     name: Analyze (${{ matrix.language }})
     needs: detect
-    if: needs.detect.outputs.has-sources == 'true'
+    if: needs.detect.outputs.languages != '[]'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     strategy:
       fail-fast: false
       matrix:
-        # TODO: 対象言語を必要に応じて変更・追加してください
-        language: [javascript-typescript]
+        language: ${{ fromJSON(needs.detect.outputs.languages) }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: CodeQL を初期化
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
-      - name: 自動ビルド
-        uses: github/codeql-action/autobuild@v4
+          build-mode: none
       - name: 解析を実行
         uses: github/codeql-action/analyze@v4
         with:
