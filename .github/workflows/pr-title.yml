@@ -1,0 +1,31 @@
+# PR タイトルの形式チェック
+#
+# PR タイトルが Conventional Commits 形式（例: `feat: ユーザー一覧画面を追加`）であることを検証します。
+# Release Drafter はこのプレフィックスでリリースノートを分類するため、形式が崩れると分類されません。
+
+name: PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  check-title:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: PR タイトルの検証
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|docs|refactor|test|chore|perf|style|build|ci|revert)(\([a-z0-9._/-]+\))?!?: .+'
+          if [[ "$PR_TITLE" =~ $pattern ]]; then
+            echo "PR タイトルは Conventional Commits 形式です: $PR_TITLE"
+          else
+            echo "::error title=PR タイトルの形式エラー::PR タイトルは「<type>: <日本語の説明>」の形式にしてください（例: feat: ユーザー一覧画面を追加）。使用可能な type: feat, fix, docs, refactor, test, chore, perf, style, build, ci, revert"
+            echo "現在のタイトル: $PR_TITLE"
+            exit 1
+          fi

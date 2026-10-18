@@ -1,6 +1,7 @@
 # Dependabot 設定
 #
 # GitHub Actions と npm の更新を有効化しています。
+# GitHub Actions の更新はまとめて 1 つの PR にし、PR タイトルは Conventional Commits 形式（chore(deps): ...）になります。
 # Dependabot ではなく Renovate を使う場合は本ファイルを削除し、`renovate.json` を追加してください。
 
 version: 2
@@ -19,6 +20,10 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/"

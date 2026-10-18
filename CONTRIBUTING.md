@@ -41,7 +41,8 @@ feat: ユーザー一覧画面を追加
 PR テンプレート（`.github/PULL_REQUEST_TEMPLATE.md`）に沿って、以下を確認してください。
 
 - [ ] タイトル・本文・コメントがすべて日本語で書かれている
-- [ ] CI（lint / typecheck / test / build）が通っている
+- [ ] PR タイトルが `feat: 〜` のような Conventional Commits 形式になっている
+- [ ] CI（lint / typecheck / test / build・PR タイトル検証）が通っている
 - [ ] 影響範囲を記載した
 - [ ] 関連 Issue を `Closes #123` 等でリンクした
 - [ ] 必要に応じてドキュメント／README を更新した
