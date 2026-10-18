@@ -5,14 +5,14 @@ about: Use this template when opening pull requests
 
 ## 概要 (Summary)
 
-
 ## 関連する Issue (Related issues)
 
-
 ## 変更内容 (What changed)
+
 - 何を変更したかを箇条書きで記載
 
 ## チェックリスト (Checklist)
+
 - [ ] PR タイトルが `feat: 〜` のような Conventional Commits 形式になっている
 - [ ] ビルドが通る
 - [ ] テストが追加/更新されている

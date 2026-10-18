@@ -5,9 +5,6 @@
     "source.fixAll.eslint": true
   },
   "editor.inlineSuggest.enabled": true,
-  "markdownlint.config": {
-    "default": true
-  },
   "yaml.validate": true,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
