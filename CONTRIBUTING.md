@@ -2,7 +2,7 @@
 
 このリポジトリへの貢献を歓迎します。本書は Issue / PR を作成する前に確認してほしい事項をまとめたものです。
 
-> 開発ルールの正本は [`CLAUDE.md`](./CLAUDE.md) です。AI エージェント（Claude / Cursor / Copilot 等）で作業する場合のルールも `CLAUDE.md` に記載されています。
+> 開発ルールの正本は [`AGENTS.md`](./AGENTS.md) です。AI エージェント（Claude / Cursor / Copilot 等）で作業する場合のルールも `AGENTS.md` に記載されています（`CLAUDE.md` などの各ツール向けファイルは `AGENTS.md` を参照しています）。
 
 ## はじめに
 

@@ -2,7 +2,7 @@
 
 このリポジトリで作業する **すべての AI エージェント／コーディングアシスタント**（Claude Code / Cursor / GitHub Copilot / Codex / Aider / その他汎用エージェント）は、本書のルールに従ってください。
 
-> 本リポジトリにおける開発ルールの **正本（Source of Truth）は本ファイル `AGENTS.md`** です。各ツール向けの指示書（`CLAUDE.md` / `.cursor/rules/project.mdc` / `.github/copilot-instructions.md`）はすべて本ファイルを参照する形に統一されています。ルール変更が必要な場合は本ファイルを更新してください。
+> 本リポジトリにおける開発ルールの **正本（Source of Truth）は本ファイル `AGENTS.md`** です。各ツール向けの指示書（`CLAUDE.md` / `.cursor/rules/project.mdc`）はすべて本ファイルを参照する形に統一されています。ルール変更が必要な場合は本ファイルを更新してください。
 
 ## 各ツール向けエントリーポイント
 
@@ -11,7 +11,6 @@
 | 汎用 AI エージェント | [`AGENTS.md`](./AGENTS.md) | **正本**。すべてのルールはここに集約 |
 | Claude Code | [`CLAUDE.md`](./CLAUDE.md) | `AGENTS.md` を参照 |
 | Cursor | [`.cursor/rules/project.mdc`](./.cursor/rules/project.mdc) | `AGENTS.md` を参照 |
-| GitHub Copilot | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) | `AGENTS.md` を参照 |
 
 ## 言語設定
 
@@ -135,6 +134,35 @@ feat: ユーザー一覧画面を追加
 npx markdownlint-cli2          # 検査
 npx markdownlint-cli2 --fix    # 自動修正できるものを修正
 ```
+
+### README の構成
+
+すべてのリポジトリの `README.md` は、次の見出しを次の順番で並べ、書く内容の粒度を揃えます。「任意」の見出しは該当する内容がある場合だけ書き、それ以外の見出しは省略しません。
+
+| 見出し | 書く内容と粒度 |
+| --- | --- |
+| `# <プロジェクト名>` | 直後に何をするアプリかを 1〜3 文で書く。公開 URL があれば併記する |
+| `## 主な機能` | 利用者から見た機能を 1 行 1 項目の箇条書きで書く（目安 3〜10 項目）。実装の詳細は書かない |
+| `## 使い方`（任意） | 画面の操作手順など、触っただけでは分からない使い方を番号付きリストで書く |
+| アプリ固有の見出し（任意） | 同期の仕組み、外部サービスの設定、導入手順など、そのアプリにしかない説明を `##` で書く |
+| `## 技術スタック` | 言語・フレームワーク・主要ライブラリ・ホスティングを 1 行 1 項目で書く。バージョンは書かない（`package.json` を正とする） |
+| `## 開発` | `### 必要な環境`（Node.js のバージョンなど）と `### コマンド`（`npm ci` と、`package.json` に実在する npm script だけ）を書く。初回だけ必要な設定があれば `###` を追加する |
+| `## ディレクトリ構成` | 主要なディレクトリとファイルだけを `text` のコードブロックで書き、各行に 1 行の説明を付ける（深さ 2 階層まで） |
+| `## デプロイ` | 公開先と、いつデプロイされるか（main への PR マージ時、PR プレビューなど）を 2〜4 行で書く |
+| `## 開発ルール` | `AGENTS.md`（正本）へのリンクを書く |
+| `## ライセンス` | ライセンス名だけを書く |
+
+- 見出しに絵文字は付けない
+- 今後の予定や TODO は README に書かず Issue で管理する
+- テンプレートに含まれるファイルの一覧（`AGENTS.md`、ワークフローなど）はアプリのリポジトリの README には書かない
+- 実際のコード・設定と食い違う内容（存在しないコマンド、使っていないライブラリなど）は書かない
+- 長い仕様や設計の説明は `docs/` 配下に分け、README からリンクする
+
+### AI 向け指示書の構成
+
+- ルールは `AGENTS.md` にだけ書く。`CLAUDE.md` と `.cursor/rules/project.mdc` は `AGENTS.md` を参照する短い要約に留め、ルールを重複して書かない
+- `AGENTS.md`・`CLAUDE.md`・`.cursor/rules/project.mdc`・`CONTRIBUTING.md`・`SECURITY.md`・Issue / PR テンプレートはテンプレートと同じ内容にし、ルールを変えるときはテンプレートから更新する
+- GitHub Copilot 向けの `.github/copilot-instructions.md` は置かない（Copilot も `AGENTS.md` を読む）
 
 ## ブランチ運用ポリシー
 
