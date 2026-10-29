@@ -164,6 +164,31 @@ npx markdownlint-cli2 --fix    # 自動修正できるものを修正
 - GitHub Copilot 向けの `.github/copilot-instructions.md` は置かない（Copilot も `AGENTS.md` を読む）
 - Cursor は使わないため、`.cursor/` や `.cursorrules` などの Cursor 向けファイルは置かず、ドキュメントでも Cursor 向けの案内を書かない
 
+## PWA のステータスバーの色
+
+iOS でホーム画面に追加して開いたとき（PWA）に、ステータスバー（ヘッダーの上の時計や電池の表示がある部分）までヘッダーと同じ色にそろえます。iOS は画面上端に固定された要素の背景色をステータスバーの色に使うため、次のように書きます。
+
+- ヘッダーは `position: fixed` または `position: sticky` と `top: 0` で画面上端に置き、ヘッダー自身に背景色を指定する
+- 画面全体を `position: fixed` の要素で包む場合は、その要素の背景色もヘッダーと同じ色にし、本文側の背景色は内側の要素に指定する
+- `<meta name="theme-color">` とマニフェストの `theme_color` もヘッダーの背景色に合わせる（Android や iOS の古いバージョン向け）。ライト / ダークを切り替えるアプリでは、切り替え時に `theme-color` も更新する
+
+## セキュリティ
+
+### GitHub Actions
+
+- ワークフロー全体の `permissions` は `contents: read` にし、書き込みが必要なジョブにだけジョブ単位で `contents: write` や `pull-requests: write` を付ける
+- `actions/checkout` には `persist-credentials: false` を付ける。`git push` を自分で実行するジョブだけは例外とし、そのジョブでは `npm ci` などの依存関係のインストールを実行しない
+- アクションはタグではなくコミット SHA で固定し、行末にバージョンをコメントで書く（例: `actions/checkout@<SHA> # v7.0.1`）。更新は Dependabot に任せる
+- `pull_request_target` と `workflow_run` は使わない
+- PR タイトルなど外部から入る値は、`run` に `${{ }}` で直接埋め込まず、`env` 経由で渡す
+
+### Web アプリ
+
+- ユーザーが入力した文字列や Markdown を HTML として表示するときは、DOMPurify でサニタイズしてから `innerHTML` / `dangerouslySetInnerHTML` に渡す
+- Firebase を使うアプリでは、Firestore / Realtime Database のルールをリポジトリで管理する（`firestore.rules` など）。データは `users/{uid}/...` の下に置くか、ドキュメントに持ち主の `uid` を持たせ、ルールで本人だけが読み書きできるようにする
+- Firebase の Web API キーは公開される前提の値のため、コミットしてよい。代わりにルールで守り、Google Cloud コンソールで API キーにリファラー制限を付ける
+- GitHub Pages のアプリは全て同じオリジン（`keigo-hisazumi.github.io`）で動き、localStorage や IndexedDB を共有する。機密性の高いデータを localStorage に置かない。オフライン用のキャッシュは、未同期の変更が無ければログアウト時に消す
+
 ## ブランチ運用ポリシー
 
 **重要**: `main` ブランチへの直接的なコミットおよびプッシュは **絶対に禁止** です。

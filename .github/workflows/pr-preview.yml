@@ -17,8 +17,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 # 本番デプロイ（deploy.yml）と同じ group で直列化し、gh-pages への
 # 同時 push による競合（pr-* プレビューの消失）を防ぐ。
@@ -28,6 +27,9 @@ concurrency:
 
 jobs:
   deploy-preview:
+    permissions:
+      contents: write
+      pull-requests: write
     # Dependabot が起動したワークフローは GITHUB_TOKEN が読み取り専用になり、
     # gh-pages への push やコメント投稿ができないためスキップする
     if: >-
@@ -36,10 +38,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Node.js のセットアップ
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: 'npm'
@@ -54,7 +58,7 @@ jobs:
         run: npm run build
 
       - name: gh-pages への PR プレビューのデプロイ
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
@@ -62,7 +66,7 @@ jobs:
           keep_files: true
 
       - name: プレビュー URL のコメント投稿
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const prNumber = context.issue.number;
@@ -108,11 +112,13 @@ jobs:
             }
 
   cleanup-preview:
+    permissions:
+      contents: write
     if: github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
