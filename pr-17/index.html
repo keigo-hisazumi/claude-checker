@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Usage Checker — Claude Code 使用状況ダッシュボード</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="page-header">
+      <h1>Claude Usage Checker</h1>
+      <p class="lead">
+        Claude Code のローカル使用ログ(JSONL)を読み込み、トークン使用量と推定コストを可視化します。
+      </p>
+      <p class="privacy-note">
+        🔒 データはすべてブラウザ内で処理され、外部には一切送信されません。
+      </p>
+    </header>
+
+    <section class="card" id="input-section">
+      <h2>1. ログを読み込む</h2>
+      <p>
+        Claude Code の使用ログは
+        <code>~/.claude/projects/</code>
+        配下に JSONL ファイルとして保存されています。
+        フォルダごと選択するか、<code>.jsonl</code> ファイルをドラッグ&amp;ドロップしてください。
+      </p>
+      <div class="input-actions">
+        <label class="button primary">
+          📁 フォルダを選択
+          <input type="file" id="dir-input" webkitdirectory multiple hidden />
+        </label>
+        <label class="button">
+          📄 ファイルを選択
+          <input type="file" id="file-input" accept=".jsonl,application/jsonl,text/plain" multiple hidden />
+        </label>
+        <button type="button" class="button ghost" id="demo-button">サンプルデータを表示</button>
+      </div>
+      <div id="dropzone" class="dropzone" role="button" tabindex="0"
+           aria-label="JSONL ファイルをここにドロップ">
+        ここに <code>.jsonl</code> ファイル / フォルダをドロップ
+      </div>
+      <p id="load-status" class="load-status" role="status"></p>
+    </section>
+
+    <section id="results" class="results" hidden>
+      <h2>2. 使用状況</h2>
+
+      <!-- 統計タイル -->
+      <div class="stat-grid">
+        <div class="stat-tile hero">
+          <span class="stat-label">推定総コスト</span>
+          <span class="stat-value" id="stat-cost">–</span>
+          <span class="stat-sub" id="stat-cost-sub"></span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-label">総トークン</span>
+          <span class="stat-value" id="stat-tokens">–</span>
+          <span class="stat-sub" id="stat-tokens-sub"></span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-label">対象期間</span>
+          <span class="stat-value" id="stat-days">–</span>
+          <span class="stat-sub" id="stat-days-sub"></span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-label">API リクエスト数</span>
+          <span class="stat-value" id="stat-entries">–</span>
+          <span class="stat-sub" id="stat-entries-sub"></span>
+        </div>
+      </div>
+
+      <!-- 日別グラフ -->
+      <div class="card">
+        <div class="chart-header">
+          <h3 id="chart-title">日別の推定コスト</h3>
+          <div class="metric-toggle" role="radiogroup" aria-label="表示する指標">
+            <label><input type="radio" name="metric" value="cost" checked /> コスト</label>
+            <label><input type="radio" name="metric" value="tokens" /> トークン</label>
+          </div>
+        </div>
+        <div id="chart" class="chart-wrap" aria-describedby="daily-table"></div>
+        <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+        <details class="table-details">
+          <summary>日別データを表で見る</summary>
+          <div class="table-scroll">
+            <table id="daily-table">
+              <thead>
+                <tr>
+                  <th>日付</th>
+                  <th class="num">入力</th>
+                  <th class="num">出力</th>
+                  <th class="num">キャッシュ書込</th>
+                  <th class="num">キャッシュ読取</th>
+                  <th class="num">推定コスト</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+
+      <!-- モデル別内訳 -->
+      <div class="card">
+        <h3>モデル別内訳</h3>
+        <div class="table-scroll">
+          <table id="model-table">
+            <thead>
+              <tr>
+                <th>モデル</th>
+                <th class="num">入力</th>
+                <th class="num">出力</th>
+                <th class="num">キャッシュ書込</th>
+                <th class="num">キャッシュ読取</th>
+                <th class="num">推定コスト</th>
+                <th class="share">コスト構成比</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p id="unknown-models" class="note" hidden></p>
+      </div>
+
+      <!-- 料金レート -->
+      <div class="card">
+        <h3>コスト推定に使用した料金レート</h3>
+        <div class="table-scroll">
+          <table id="pricing-table">
+            <thead>
+              <tr>
+                <th>モデル系列</th>
+                <th class="num">入力 / 1M</th>
+                <th class="num">出力 / 1M</th>
+                <th class="num">キャッシュ書込 / 1M</th>
+                <th class="num">キャッシュ読取 / 1M</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="note">
+          ※ コストは公開されている API 料金(USD)に基づく<strong>推定値</strong>です。
+          キャッシュ書込は入力単価の 1.25 倍(5 分 TTL)、キャッシュ読取は 0.1 倍で計算しています。
+          サブスクリプション(Pro / Max)利用時の実際の請求額とは異なります。
+        </p>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <p>
+        ログの重複エントリは <code>message.id</code> + <code>requestId</code> で除外しています。
+      </p>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
